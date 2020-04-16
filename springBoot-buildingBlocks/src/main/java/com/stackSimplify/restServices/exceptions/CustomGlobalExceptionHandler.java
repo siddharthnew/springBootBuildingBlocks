@@ -37,21 +37,26 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 		
 	}
 
-	/*
-	 * @ExceptionHandler(UserNameNotFoundException.class) public final
-	 * ResponseEntity<Object>
-	 * handleUserNameNotFoundException(UserNameNotFoundException une,WebRequest
-	 * request){ CustomErrorInfo custErrInfo=new CustomErrorInfo(new Date(),
-	 * une.getMessage(),request.getDescription(true)); return new
-	 * ResponseEntity<Object>(custErrInfo,HttpStatus.BAD_REQUEST);
-	 * 
-	 * }
-	 */
+	@ExceptionHandler(UserNameNotFoundException.class)
+	public final ResponseEntity<Object> handleUserNameNotFoundException(UserNameNotFoundException une,
+			WebRequest request) {
+		CustomErrorInfo custErrInfo = new CustomErrorInfo(new Date(), une.getMessage(), request.getDescription(true));
+		return new ResponseEntity<Object>(custErrInfo, HttpStatus.BAD_REQUEST);
+
+	}
+	 
 	
 	@ExceptionHandler(ConstraintViolationException.class)
 	public final ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex,
 			WebRequest request) {
-		CustomErrorInfo custErrInfo = new CustomErrorInfo(new Date(), ex.getMessage(), request.getDescription(true));
+		CustomErrorInfo custErrInfo = new CustomErrorInfo(new Date(), "Greater than 1", request.getDescription(true));
+		return new ResponseEntity<Object>(custErrInfo, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(org.hibernate.exception.ConstraintViolationException.class)
+	public final ResponseEntity<Object> handleConstraintViolationException2(org.hibernate.exception.ConstraintViolationException ex,
+			WebRequest request) {
+		CustomErrorInfo custErrInfo = new CustomErrorInfo(new Date(),"Unique Constraint", request.getDescription(true));
 		return new ResponseEntity<Object>(custErrInfo, HttpStatus.BAD_REQUEST);
 	}
 	

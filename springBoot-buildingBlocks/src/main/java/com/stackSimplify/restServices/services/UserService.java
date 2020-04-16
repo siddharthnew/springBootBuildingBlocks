@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.stackSimplify.restServices.entities.User;
+import com.stackSimplify.restServices.exceptions.SSNExistsException;
 import com.stackSimplify.restServices.exceptions.UserExistsException;
 import com.stackSimplify.restServices.exceptions.UserNotFoundException;
 import com.stackSimplify.restServices.repositry.UserRepositry;
@@ -19,6 +20,8 @@ public class UserService {
 	
 	@Autowired
 	private UserRepositry userRepositry;
+	private User userExistsByName;
+	private User userExistsBySsn;
 	
 	//getAllUsers method
 	public List<User> getAllUsers() {
@@ -26,11 +29,17 @@ public class UserService {
 	}
 	
 	//create user method
-	public User createUser(User user) throws UserExistsException {
-		User userExists = userRepositry.findByUserName(user.getUserName());
-		if(userExists!=null) {
+	public User createUser(User user) throws UserExistsException, SSNExistsException {
+		userExistsByName = userRepositry.findByUserName(user.getUserName());
+		userExistsBySsn=userRepositry.findBySsn(user.getSsn());
+		if(userExistsByName!=null) {
 			throw new UserExistsException("User Already Exists. Cannot create a duplicate user.try with another username");
 		}
+		/*
+		 * if(userExistsBySsn!=null) { throw new
+		 * SSNExistsException("SSN should be unique. Cannot cfreate aduplicate ssn, try with differen ssn"
+		 * ); }
+		 */
 		return userRepositry.save(user);
 	}
 	

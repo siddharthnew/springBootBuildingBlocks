@@ -23,26 +23,32 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.stackSimplify.restServices.entities.User;
+import com.stackSimplify.restServices.exceptions.SSNExistsException;
 import com.stackSimplify.restServices.exceptions.UserExistsException;
 import com.stackSimplify.restServices.exceptions.UserNameNotFoundException;
 import com.stackSimplify.restServices.exceptions.UserNotFoundException;
 import com.stackSimplify.restServices.services.UserService;
 
 @RestController
-@Validated
+@Validated // added to do path variable validation here, getuserby id we haven path variable vaildation i.e @min(id=1)
 public class UserController {
 
 	// Autowired the userservice
 	@Autowired
 	private UserService userService;
 
-	@GetMapping("/users")
+	@GetMapping("/users") 
 	public List<User> getAllUsers() {
 		return userService.getAllUsers();
 
 	}
 
 	// create user method
+	//The @Valid annotation attached to the method parameter tells Spring Boot to automatically 
+	//instantiate a Validator and to validate the object. 
+	//This check is performed before the method body is executed.
+	//If the validation fails, the method will throw a MethodArgumentNotValidException, which is mapped to the 400 Bad Request response status by default.
+	
 	@PostMapping("/createUsers")
 	public ResponseEntity<Void> createUser(@Valid @RequestBody User user,UriComponentsBuilder builder) {
 		try {
@@ -53,6 +59,9 @@ public class UserController {
 		   return new ResponseEntity<Void>(headers,HttpStatus.CREATED);
 		} catch (UserExistsException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+	}
+		catch (SSNExistsException ssn) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ssn.getMessage());
 	}
 	}
 	// get user by id

@@ -10,5 +10,6 @@ import com.stackSimplify.restServices.entities.User;
 public interface UserRepositry extends JpaRepository<User, Long>{
 	
 	User findByUserName(String name);
+	User findBySsn(String ssn);
 
 }
