@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -31,13 +32,14 @@ import com.stackSimplify.restServices.services.UserService;
 
 @RestController
 @Validated // added to do path variable validation here, getuserby id we haven path variable vaildation i.e @min(id=1)
+@RequestMapping(value = "/users")
 public class UserController {
 
 	// Autowired the userservice
 	@Autowired
 	private UserService userService;
 
-	@GetMapping("/users") 
+	@GetMapping 
 	public List<User> getAllUsers() {
 		return userService.getAllUsers();
 
@@ -65,7 +67,7 @@ public class UserController {
 	}
 	}
 	// get user by id
-	@GetMapping("/users/{id}")
+	@GetMapping("/{id}")
 	public Optional<User> getUserById(@PathVariable("id") @Min(1) Long id) {
 		try {
 			return userService.getUserById(id);
@@ -76,7 +78,7 @@ public class UserController {
 	}
 
 	// updateBy Id
-	@PutMapping("/users/{id}")
+	@PutMapping("/{id}")
 	public User updateUserById(@PathVariable("id") Long id, @RequestBody User user) {
 		try {
 			return userService.updateUserById(id, user);
@@ -92,7 +94,7 @@ public class UserController {
 	}
 
 	//find user by Username
-	@GetMapping("/users/byUserName/{username}")
+	@GetMapping("/byUserName/{username}")
 	public User getUserByUserName(@PathVariable("username") String userName) throws UserNameNotFoundException {
 		
 		User user = userService.getUserByUserName(userName);
